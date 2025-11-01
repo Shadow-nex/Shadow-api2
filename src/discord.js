@@ -26,7 +26,7 @@ const commands = [
   new SlashCommandBuilder()
     .setName('help')
     .setDescription('Show available commands and help information'),
-  
+
   new SlashCommandBuilder()
     .setName('stats')
     .setDescription('View API statistics')
@@ -56,7 +56,7 @@ const commands = [
           { name: 'Last week', value: '7d' }
         )
     ),
-  
+
   new SlashCommandBuilder()
     .setName('maintenance')
     .setDescription('Toggle maintenance mode')
@@ -69,7 +69,7 @@ const commands = [
           { name: 'Off', value: 'off' }
         )
     ),
-  
+
   new SlashCommandBuilder()
     .setName('activity')
     .setDescription('Manage bot activity status')
@@ -88,7 +88,7 @@ const commands = [
         .setDescription('Custom status text (only for set_custom action)')
         .setRequired(false)
     ),
-  
+
   new SlashCommandBuilder()
     .setName('apikey')
     .setDescription('Manage API keys')
@@ -161,7 +161,7 @@ const commands = [
         .setName('list')
         .setDescription('List all API keys')
     ),
-  
+
   new SlashCommandBuilder()
     .setName('endpoint')
     .setDescription('Manage API endpoints')
@@ -256,7 +256,7 @@ const commands = [
         .setName('scan')
         .setDescription('Scan and show detected API paths from folder structure')
     ),
-  
+
   new SlashCommandBuilder()
     .setName('owner')
     .setDescription('Owner-only commands')
@@ -291,7 +291,7 @@ const commands = [
             .setRequired(true)
         )
     ),
-  
+
   new SlashCommandBuilder()
     .setName('automod')
     .setDescription('Auto-moderation settings')
@@ -334,7 +334,7 @@ const commands = [
             .setRequired(true)
         )
     ),
-  
+
   new SlashCommandBuilder()
     .setName('autorole')
     .setDescription('Auto-role management')
@@ -397,7 +397,7 @@ const badWords = ['spam', 'scam', 'hack', 'virus', 'malware', 'phishing']
 
 client.once('ready', async () => {
   console.log(`Discord bot logged in as ${client.user.tag}`)
-  
+
   try {
     console.log('Started refreshing application (/) commands.')
     await rest.put(
@@ -413,7 +413,7 @@ client.once('ready', async () => {
     if (!customActivity) {
       const activities = [
         { name: `${statsData.totalRequests} API requests`, type: 3 },
-        { name: 'with RaolByte APIs', type: 0 },
+        { name: 'with NagatoByte APIs', type: 0 },
         { name: 'the server status', type: 3 },
         { name: 'API documentation', type: 3 },
         { name: `${client.guilds.cache.size} servers`, type: 3 },
@@ -482,26 +482,26 @@ client.on('interactionCreate', async interaction => {
 
 client.on(Events.MessageCreate, async message => {
   if (message.author.bot) return
-  
+
   const guildId = message.guild?.id
   if (!guildId) return
-  
+
   const settings = autoModSettings.get(guildId)
   if (!settings) return
-  
+
   try {
     if (settings.antispam) {
       await handleAntiSpam(message, settings)
     }
-    
+
     if (settings.autodelete) {
       await handleAutoDelete(message, settings)
     }
-    
+
     if (settings.caps) {
       await handleCapsFilter(message, settings)
     }
-    
+
     if (settings.badwords) {
       await handleBadWordsFilter(message, settings)
     }
@@ -513,9 +513,9 @@ client.on(Events.MessageCreate, async message => {
 client.on(Events.GuildMemberAdd, async member => {
   const guildId = member.guild.id
   const roles = autoRoles.get(guildId)
-  
+
   if (!roles || roles.length === 0) return
-  
+
   try {
     for (const roleData of roles) {
       const role = member.guild.roles.cache.get(roleData.id)
@@ -543,12 +543,12 @@ client.on(Events.GuildMemberAdd, async member => {
 async function handleAntiSpam(message, settings) {
   const userId = message.author.id
   const now = Date.now()
-  
+
   if (!userMessageCounts.has(userId)) {
     userMessageCounts.set(userId, { count: 1, resetTime: now + 60000 })
     return
   }
-  
+
   const data = userMessageCounts.get(userId)
   if (now > data.resetTime) {
     data.count = 1
@@ -557,14 +557,14 @@ async function handleAntiSpam(message, settings) {
     data.count++
     if (data.count > settings.spamThreshold) {
       if (spamCooldowns.has(userId)) return
-      
+
       spamCooldowns.set(userId, now + 300000)
       setTimeout(() => spamCooldowns.delete(userId), 300000)
-      
+
       try {
         await message.delete()
         await message.channel.send(`⚠️ ${message.author}, please slow down! You're sending messages too quickly.`)
-        
+
         const logChannel = message.guild.channels.cache.get(settings.logChannel)
         if (logChannel) {
           const embed = new EmbedBuilder()
@@ -577,7 +577,7 @@ async function handleAntiSpam(message, settings) {
               { name: 'Messages', value: `${data.count}/${settings.spamThreshold}`, inline: true }
             )
             .setTimestamp()
-          
+
           await logChannel.send({ embeds: [embed] })
         }
       } catch (error) {
@@ -585,7 +585,7 @@ async function handleAntiSpam(message, settings) {
       }
     }
   }
-  
+
   userMessageCounts.set(userId, data)
 }
 
@@ -599,14 +599,14 @@ async function handleAutoDelete(message, settings) {
     /t\.me\/\w+/,
     /telegram\.me\/\w+/
   ]
-  
+
   const isSuspicious = suspiciousPatterns.some(pattern => pattern.test(content))
-  
+
   if (isSuspicious) {
     try {
       await message.delete()
       await message.channel.send(`⚠️ ${message.author}, suspicious links are not allowed!`)
-      
+
       const logChannel = message.guild.channels.cache.get(settings.logChannel)
       if (logChannel) {
         const embed = new EmbedBuilder()
@@ -619,7 +619,7 @@ async function handleAutoDelete(message, settings) {
             { name: 'Content', value: message.content.slice(0, 1000), inline: false }
           )
           .setTimestamp()
-        
+
         await logChannel.send({ embeds: [embed] })
       }
     } catch (error) {
@@ -632,12 +632,12 @@ async function handleCapsFilter(message, settings) {
   const content = message.content
   const capsCount = (content.match(/[A-Z]/g) || []).length
   const totalChars = content.replace(/\s/g, '').length
-  
+
   if (totalChars > 10 && capsCount / totalChars > 0.7) {
     try {
       await message.delete()
       await message.channel.send(`⚠️ ${message.author}, please don't use excessive caps!`)
-      
+
       const logChannel = message.guild.channels.cache.get(settings.logChannel)
       if (logChannel) {
         const embed = new EmbedBuilder()
@@ -650,7 +650,7 @@ async function handleCapsFilter(message, settings) {
             { name: 'Content', value: content.slice(0, 1000), inline: false }
           )
           .setTimestamp()
-        
+
         await logChannel.send({ embeds: [embed] })
       }
     } catch (error) {
@@ -662,12 +662,12 @@ async function handleCapsFilter(message, settings) {
 async function handleBadWordsFilter(message, settings) {
   const content = message.content.toLowerCase()
   const foundBadWords = badWords.filter(word => content.includes(word))
-  
+
   if (foundBadWords.length > 0) {
     try {
       await message.delete()
       await message.channel.send(`⚠️ ${message.author}, inappropriate language is not allowed!`)
-      
+
       const logChannel = message.guild.channels.cache.get(settings.logChannel)
       if (logChannel) {
         const embed = new EmbedBuilder()
@@ -681,7 +681,7 @@ async function handleBadWordsFilter(message, settings) {
             { name: 'Content', value: message.content.slice(0, 1000), inline: false }
           )
           .setTimestamp()
-        
+
         await logChannel.send({ embeds: [embed] })
       }
     } catch (error) {
@@ -694,12 +694,12 @@ function updateStats(endpoint = 'unknown') {
   statsData.totalRequests++
   const now = Date.now()
   const timeKey = Math.floor(now / 60000)
-  
+
   if (!statsData.requestsByTime.has(timeKey)) {
     statsData.requestsByTime.set(timeKey, 0)
   }
   statsData.requestsByTime.set(timeKey, statsData.requestsByTime.get(timeKey) + 1)
-  
+
   if (!statsData.topRequests.has(endpoint)) {
     statsData.topRequests.set(endpoint, 0)
   }
@@ -709,7 +709,7 @@ function updateStats(endpoint = 'unknown') {
 function getTimeRange(timeStr) {
   const now = Date.now()
   let startTime = now
-  
+
   switch (timeStr) {
     case '5m':
       startTime = now - (5 * 60 * 1000)
@@ -741,7 +741,7 @@ function getTimeRange(timeStr) {
     default:
       startTime = now - (30 * 60 * 1000)
   }
-  
+
   return { startTime, endTime: now }
 }
 
@@ -749,31 +749,31 @@ async function generateStatsEmbed(timeStr = '30m') {
   const { startTime, endTime } = getTimeRange(timeStr)
   const uptime = Math.floor((Date.now() - statsData.startTime) / 1000)
   const uptimeStr = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${uptime % 60}s`
-  
+
   let requestsInPeriod = 0
   const startMinute = Math.floor(startTime / 60000)
   const endMinute = Math.floor(endTime / 60000)
-  
+
   for (let minute = startMinute; minute <= endMinute; minute++) {
     if (statsData.requestsByTime.has(minute)) {
       requestsInPeriod += statsData.requestsByTime.get(minute)
     }
   }
-  
+
   const memoryUsage = process.memoryUsage()
   const totalMemory = os.totalmem()
   const freeMemory = os.freemem()
   const usedMemory = totalMemory - freeMemory
   const memoryPercent = Math.round((usedMemory / totalMemory) * 100)
-  
+
   const cpuUsage = process.cpuUsage()
   const loadAvg = os.loadavg()
   const cpuCount = os.cpus().length
-  
+
   const topRequests = Array.from(statsData.topRequests.entries())
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
-  
+
   const embed = new EmbedBuilder()
     .setTitle('📊 Enhanced API Statistics')
     .setColor(0x00ff00)
@@ -811,7 +811,7 @@ async function handleOwner(interaction) {
   }
 
   const subcommand = interaction.options.getSubcommand()
-  
+
   try {
     switch (subcommand) {
       case 'eval':
@@ -835,7 +835,7 @@ async function handleOwner(interaction) {
 
 async function handleEval(interaction) {
   const code = interaction.options.getString('code')
-  
+
   try {
     const result = eval(code)
     const embed = new EmbedBuilder()
@@ -843,7 +843,7 @@ async function handleEval(interaction) {
       .setColor(0x00ff00)
       .setDescription(`\`\`\`js\n${String(result).slice(0, 1000)}\`\`\``)
       .setTimestamp()
-    
+
     await interaction.reply({ embeds: [embed], ephemeral: true })
   } catch (error) {
     const embed = new EmbedBuilder()
@@ -851,7 +851,7 @@ async function handleEval(interaction) {
       .setColor(0xff0000)
       .setDescription(`\`\`\`js\n${error.message}\`\`\``)
       .setTimestamp()
-    
+
     await interaction.reply({ embeds: [embed], ephemeral: true })
   }
 }
@@ -862,7 +862,7 @@ async function handleRestart(interaction) {
     .setColor(0xff9900)
     .setDescription('Restarting bot...')
     .setTimestamp()
-  
+
   await interaction.reply({ embeds: [embed] })
   process.exit(0)
 }
@@ -873,7 +873,7 @@ async function handleShutdown(interaction) {
     .setColor(0xff0000)
     .setDescription('Shutting down bot...')
     .setTimestamp()
-  
+
   await interaction.reply({ embeds: [embed] })
   process.exit(1)
 }
@@ -881,10 +881,10 @@ async function handleShutdown(interaction) {
 async function handleBroadcast(interaction) {
   const message = interaction.options.getString('message')
   const guilds = client.guilds.cache
-  
+
   let successCount = 0
   let failCount = 0
-  
+
   for (const [guildId, guild] of guilds) {
     try {
       const systemChannel = guild.systemChannel || guild.channels.cache.find(ch => ch.type === 0)
@@ -898,7 +898,7 @@ async function handleBroadcast(interaction) {
       failCount++
     }
   }
-  
+
   const embed = new EmbedBuilder()
     .setTitle('📢 Broadcast Complete')
     .setColor(0x00ff00)
@@ -907,13 +907,13 @@ async function handleBroadcast(interaction) {
       { name: 'Message', value: message, inline: false }
     )
     .setTimestamp()
-  
+
   await interaction.reply({ embeds: [embed], ephemeral: true })
 }
 
 async function handleAutoMod(interaction) {
   const subcommand = interaction.options.getSubcommand()
-  
+
   try {
     switch (subcommand) {
       case 'setup':
@@ -932,7 +932,7 @@ async function handleAutoMod(interaction) {
 async function handleAutoModSetup(interaction) {
   const logChannel = interaction.options.getChannel('log_channel')
   const spamThreshold = interaction.options.getInteger('spam_threshold') || 5
-  
+
   const guildId = interaction.guild.id
   autoModSettings.set(guildId, {
     logChannel: logChannel.id,
@@ -942,7 +942,7 @@ async function handleAutoModSetup(interaction) {
     caps: true,
     badwords: true
   })
-  
+
   const embed = new EmbedBuilder()
     .setTitle('🛡️ Auto-Moderation Setup')
     .setColor(0x00ff00)
@@ -953,36 +953,36 @@ async function handleAutoModSetup(interaction) {
       { name: 'Features', value: 'Anti-Spam, Auto-Delete Links, Caps Filter, Bad Words Filter', inline: false }
     )
     .setTimestamp()
-  
+
   await interaction.reply({ embeds: [embed] })
 }
 
 async function handleAutoModToggle(interaction) {
   const feature = interaction.options.getString('feature')
   const enabled = interaction.options.getBoolean('enabled')
-  
+
   const guildId = interaction.guild.id
   if (!autoModSettings.has(guildId)) {
     await interaction.reply({ content: '❌ Auto-moderation not set up. Use `/automod setup` first.', ephemeral: true })
     return
   }
-  
+
   const settings = autoModSettings.get(guildId)
   settings[feature] = enabled
   autoModSettings.set(guildId, settings)
-  
+
   const embed = new EmbedBuilder()
     .setTitle('🛡️ Auto-Moderation Toggle')
     .setColor(enabled ? 0x00ff00 : 0xff0000)
     .setDescription(`${feature.charAt(0).toUpperCase() + feature.slice(1)} has been ${enabled ? 'enabled' : 'disabled'}.`)
     .setTimestamp()
-  
+
   await interaction.reply({ embeds: [embed] })
 }
 
 async function handleAutoRole(interaction) {
   const subcommand = interaction.options.getSubcommand()
-  
+
   try {
     switch (subcommand) {
       case 'add':
@@ -1004,21 +1004,21 @@ async function handleAutoRole(interaction) {
 async function handleAutoRoleAdd(interaction) {
   const role = interaction.options.getRole('role')
   const delay = interaction.options.getInteger('delay') || 0
-  
+
   const guildId = interaction.guild.id
   if (!autoRoles.has(guildId)) {
     autoRoles.set(guildId, [])
   }
-  
+
   const roles = autoRoles.get(guildId)
   if (roles.some(r => r.id === role.id)) {
     await interaction.reply({ content: '❌ This role is already set for auto-assignment.', ephemeral: true })
     return
   }
-  
+
   roles.push({ id: role.id, name: role.name, delay })
   autoRoles.set(guildId, roles)
-  
+
   const embed = new EmbedBuilder()
     .setTitle('🎭 Auto-Role Added')
     .setColor(0x00ff00)
@@ -1028,66 +1028,66 @@ async function handleAutoRoleAdd(interaction) {
       { name: 'Delay', value: `${delay} seconds`, inline: true }
     )
     .setTimestamp()
-  
+
   await interaction.reply({ embeds: [embed] })
 }
 
 async function handleAutoRoleRemove(interaction) {
   const role = interaction.options.getRole('role')
-  
+
   const guildId = interaction.guild.id
   if (!autoRoles.has(guildId)) {
     await interaction.reply({ content: '❌ No auto-roles configured for this server.', ephemeral: true })
     return
   }
-  
+
   const roles = autoRoles.get(guildId)
   const roleIndex = roles.findIndex(r => r.id === role.id)
-  
+
   if (roleIndex === -1) {
     await interaction.reply({ content: '❌ This role is not set for auto-assignment.', ephemeral: true })
     return
   }
-  
+
   roles.splice(roleIndex, 1)
   autoRoles.set(guildId, roles)
-  
+
   const embed = new EmbedBuilder()
     .setTitle('🎭 Auto-Role Removed')
     .setColor(0xff0000)
     .setDescription(`Role ${role} will no longer be automatically assigned.`)
     .setTimestamp()
-  
+
   await interaction.reply({ embeds: [embed] })
 }
 
 async function handleAutoRoleList(interaction) {
   const guildId = interaction.guild.id
   const roles = autoRoles.get(guildId) || []
-  
+
   if (roles.length === 0) {
     await interaction.reply({ content: '❌ No auto-roles configured for this server.', ephemeral: true })
     return
   }
-  
+
   const rolesList = roles.map((role, index) => 
     `${index + 1}. <@&${role.id}> (${role.delay}s delay)`
   ).join('\n')
-  
+
   const embed = new EmbedBuilder()
     .setTitle('🎭 Auto-Roles List')
     .setColor(0x0099ff)
     .setDescription(rolesList)
     .setTimestamp()
-  
+
   await interaction.reply({ embeds: [embed] })
 }
 
 async function handleHelp(interaction) {
   const embed = new EmbedBuilder()
-    .setTitle('🤖 RaolByte API Bot Commands')
+    .setTitle('🤖 NagatoByte API Bot Commands')
     .setColor(0x0099ff)
-    .setDescription('Here are all available commands for the RaolByte API bot:')
+    .setDescription('Here are all available commands for the NagatoByte API bot:')
     .addFields(
       { name: '📊 `/stats`', value: 'View enhanced API statistics with top requests and system info', inline: false },
       { name: '🎮 `/activity`', value: 'Manage bot activity status (custom/auto)', inline: false },
@@ -1104,7 +1104,7 @@ async function handleHelp(interaction) {
       { name: '🎭 Auto-Roles', value: '• Automatic role assignment\n• Configurable delays\n• Multiple roles support', inline: false }
     )
     .setTimestamp()
-    .setFooter({ text: 'RaolByte API Bot • Enhanced with auto-moderation and auto-roles' })
+    .setFooter({ text: 'NagatoByte API Bot • Enhanced with auto-moderation and auto-roles' })
 
   await interaction.reply({ embeds: [embed] })
 }
@@ -1112,18 +1112,18 @@ async function handleHelp(interaction) {
 async function handleStats(interaction) {
   const action = interaction.options.getString('action') || 'view'
   const timeStr = interaction.options.getString('time') || '30m'
-  
+
   switch (action) {
     case 'start_auto':
       if (autoStatsInterval) {
         clearInterval(autoStatsInterval)
       }
-      
+
       autoStatsChannel = interaction.channel
       const embed = await generateStatsEmbed(timeStr)
       const message = await interaction.reply({ embeds: [embed], fetchReply: true })
       autoStatsMessage = message
-      
+
       autoStatsInterval = setInterval(async () => {
         if (autoStatsChannel && autoStatsMessage) {
           try {
@@ -1134,10 +1134,10 @@ async function handleStats(interaction) {
           }
         }
       }, 30000)
-      
+
       await interaction.followUp({ content: '✅ Auto stats enabled! Stats will update every 30 seconds.', ephemeral: true })
       break
-      
+
     case 'stop_auto':
       if (autoStatsInterval) {
         clearInterval(autoStatsInterval)
@@ -1149,7 +1149,7 @@ async function handleStats(interaction) {
         await interaction.reply({ content: '❌ Auto stats is not currently enabled.', ephemeral: true })
       }
       break
-      
+
     case 'view':
     default:
       const statsEmbed = await generateStatsEmbed(timeStr)
@@ -1161,7 +1161,7 @@ async function handleStats(interaction) {
 async function handleActivity(interaction) {
   const action = interaction.options.getString('action')
   const status = interaction.options.getString('status')
-  
+
   try {
     switch (action) {
       case 'set_custom':
@@ -1169,42 +1169,42 @@ async function handleActivity(interaction) {
           await interaction.reply({ content: '❌ Please provide a custom status text!', ephemeral: true })
           return
         }
-        
+
         customActivity = status
         await client.user.setActivity(status, { type: 3 })
-        
+
         const setEmbed = new EmbedBuilder()
           .setTitle('🎮 Activity Status')
           .setColor(0x00ff00)
           .setDescription(`✅ Custom activity set to: **${status}**`)
           .setTimestamp()
-        
+
         await interaction.reply({ embeds: [setEmbed] })
         break
-        
+
       case 'reset_auto':
         customActivity = null
         await client.user.setActivity('API requests', { type: 3 })
-        
+
         const resetEmbed = new EmbedBuilder()
           .setTitle('🎮 Activity Status')
           .setColor(0x0099ff)
           .setDescription('✅ Activity reset to automatic rotation')
           .setTimestamp()
-        
+
         await interaction.reply({ embeds: [resetEmbed] })
         break
-        
+
       case 'show_current':
         const currentActivity = client.user.presence.activities[0]
         const activityText = currentActivity ? `${currentActivity.name} (${getActivityTypeName(currentActivity.type)})` : 'No activity set'
-        
+
         const showEmbed = new EmbedBuilder()
           .setTitle('🎮 Current Activity')
           .setColor(0x0099ff)
           .setDescription(`**Current Status:** ${activityText}\n**Mode:** ${customActivity ? 'Custom' : 'Automatic'}`)
           .setTimestamp()
-        
+
         await interaction.reply({ embeds: [showEmbed] })
         break
     }
@@ -1229,20 +1229,20 @@ function getActivityTypeName(type) {
 async function handleMaintenance(interaction) {
   const action = interaction.options.getString('action')
   const enabled = action === 'on'
-  
+
   try {
     const settingsPath = path.join(__dirname, 'settings.json')
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
-    
+
     if (!settings.maintenance) {
       settings.maintenance = {}
     }
-    
+
     settings.maintenance.enabled = enabled
     settings.maintenance.message = enabled ? 'API is currently under maintenance. Please try again later.' : ''
-    
+
     fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2))
-    
+
     const embed = new EmbedBuilder()
       .setTitle('🔧 Maintenance Mode')
       .setColor(enabled ? 0xff9900 : 0x00ff00)
@@ -1257,35 +1257,35 @@ async function handleMaintenance(interaction) {
 
 async function handleApiKey(interaction) {
   const subcommand = interaction.options.getSubcommand()
-  
+
   try {
     const settingsPath = path.join(__dirname, 'settings.json')
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
-    
+
     if (!settings.apiKeys) {
       settings.apiKeys = []
     }
-    
+
     if (!settings.apiSettings) {
       settings.apiSettings = {}
     }
-    
+
     if (!settings.apiSettings.apikey) {
       settings.apiSettings.apikey = {}
     }
-    
+
     switch (subcommand) {
       case 'add':
         const key = interaction.options.getString('key')
         const name = interaction.options.getString('name')
         const category = interaction.options.getString('category')
         const ratelimit = interaction.options.getString('ratelimit')
-        
+
         if (settings.apiKeys.some(k => k.key === key) || settings.apiSettings.apikey[key]) {
           await interaction.reply({ content: '❌ API key already exists!', ephemeral: true })
           return
         }
-        
+
         settings.apiKeys.push({ 
           key, 
           name, 
@@ -1294,16 +1294,16 @@ async function handleApiKey(interaction) {
           active: true, 
           createdAt: new Date().toISOString() 
         })
-        
+
         settings.apiSettings.apikey[key] = {
           rateLimit: ratelimit,
           enabled: true,
           category: category,
           name: name
         }
-        
+
         fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2))
-        
+
         const addEmbed = new EmbedBuilder()
           .setTitle('🔑 API Key Added')
           .setColor(0x00ff00)
@@ -1314,24 +1314,24 @@ async function handleApiKey(interaction) {
             { name: 'Key Preview', value: `\`${key.substring(0, 8)}...\``, inline: true }
           )
           .setTimestamp()
-        
+
         await interaction.reply({ embeds: [addEmbed], ephemeral: true })
         break
-        
+
       case 'delete':
         const keyToDelete = interaction.options.getString('key')
         const keyIndex = settings.apiKeys.findIndex(k => k.key === keyToDelete)
-        
+
         if (keyIndex === -1 && !settings.apiSettings.apikey[keyToDelete]) {
           await interaction.reply({ content: '❌ API key not found!', ephemeral: true })
           return
         }
-        
+
         let deletedKey = null
         if (keyIndex !== -1) {
           deletedKey = settings.apiKeys.splice(keyIndex, 1)[0]
         }
-        
+
         if (settings.apiSettings.apikey[keyToDelete]) {
           if (!deletedKey) {
             deletedKey = {
@@ -1341,36 +1341,36 @@ async function handleApiKey(interaction) {
           }
           delete settings.apiSettings.apikey[keyToDelete]
         }
-        
+
         fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2))
-        
+
         await interaction.reply({ content: `✅ API key **${deletedKey.name}** deleted successfully!`, ephemeral: true })
         break
-        
+
       case 'toggle':
         const toggleAction = interaction.options.getString('action')
         settings.apiSettings.requireApikey = toggleAction === 'enable'
         fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2))
-        
+
         const toggleEmbed = new EmbedBuilder()
           .setTitle('🔧 API Key Requirement')
           .setColor(toggleAction === 'enable' ? 0x00ff00 : 0xff9900)
           .setDescription(`API key requirement has been **${toggleAction === 'enable' ? 'enabled' : 'disabled'}**!`)
           .setTimestamp()
-        
+
         await interaction.reply({ embeds: [toggleEmbed] })
         break
-        
+
       case 'list':
         const allApiKeys = []
-        
+
         settings.apiKeys.forEach(apiKey => {
           allApiKeys.push({
             ...apiKey,
             source: 'array'
           })
         })
-        
+
         Object.entries(settings.apiSettings.apikey).forEach(([key, config]) => {
           if (!settings.apiKeys.some(k => k.key === key)) {
             allApiKeys.push({
@@ -1384,18 +1384,18 @@ async function handleApiKey(interaction) {
             })
           }
         })
-        
+
         if (allApiKeys.length === 0) {
           await interaction.reply({ content: '❌ No API keys found!', ephemeral: true })
           return
         }
-        
+
         const embed = new EmbedBuilder()
           .setTitle('🔑 API Keys List')
           .setColor(0x0099ff)
           .setDescription(`Found **${allApiKeys.length}** API key(s)`)
           .setTimestamp()
-        
+
         allApiKeys.forEach((apiKey, index) => {
           const categoryEmoji = {
             'free': '🆓',
@@ -1404,14 +1404,14 @@ async function handleApiKey(interaction) {
             'admin': '👑',
             'default': '🔧'
           }[apiKey.category] || '❓'
-          
+
           embed.addFields({
             name: `${index + 1}. ${categoryEmoji} ${apiKey.name}`,
             value: `**Key:** \`${apiKey.key.substring(0, 8)}...\`\n**Category:** ${apiKey.category.charAt(0).toUpperCase() + apiKey.category.slice(1)}\n**Rate Limit:** ${apiKey.ratelimit}\n**Status:** ${apiKey.active ? '✅ Active' : '❌ Inactive'}\n**Created:** ${apiKey.createdAt}\n**Source:** ${apiKey.source === 'default' ? 'Default' : 'Custom'}`,
             inline: false
           })
         })
-        
+
         await interaction.reply({ embeds: [embed], ephemeral: true })
         break
     }
@@ -1423,7 +1423,7 @@ async function handleApiKey(interaction) {
 
 async function handleEndpoint(interaction) {
   const subcommand = interaction.options.getSubcommand()
-  
+
   try {
     switch (subcommand) {
       case 'add':
@@ -1453,7 +1453,7 @@ async function handleAddEndpoint(interaction) {
   const description = interaction.options.getString('description') || `API endpoint for ${name}`
   const parameters = interaction.options.getString('parameters') || ''
   const optionalParameters = interaction.options.getString('optional_parameters') || ''
-  
+
   if (!/^[a-zA-Z0-9-_]+$/.test(filename)) {
     await interaction.reply({ 
       content: '❌ Invalid filename! Only letters, numbers, hyphens, and underscores are allowed.', 
@@ -1461,17 +1461,17 @@ async function handleAddEndpoint(interaction) {
     })
     return
   }
-  
+
   try {
     const apiFolder = path.join(__dirname, 'api')
     const categoryFolder = path.join(apiFolder, category)
     const fileName = `${filename}.js`
     const filePath = path.join(categoryFolder, fileName)
-    
+
     if (!fs.existsSync(categoryFolder)) {
       fs.mkdirSync(categoryFolder, { recursive: true })
     }
-    
+
     if (fs.existsSync(filePath)) {
       await interaction.reply({ 
         content: `❌ Endpoint **${filename}** already exists in category **${category}**!`, 
@@ -1479,13 +1479,13 @@ async function handleAddEndpoint(interaction) {
       })
       return
     }
-    
+
     const endpointTemplate = generateEndpointTemplate(filename, category, method, description, parameters, optionalParameters)
-    
+
     fs.writeFileSync(filePath, endpointTemplate)
-    
+
     await updateSettingsWithEndpoint(name, filename, category, method, description, parameters, optionalParameters)
-    
+
     const embed = new EmbedBuilder()
       .setTitle('🚀 Endpoint Created')
       .setColor(0x00ff00)
@@ -1500,17 +1500,17 @@ async function handleAddEndpoint(interaction) {
         { name: 'Description', value: description, inline: false }
       )
       .setTimestamp()
-    
+
     if (parameters) {
       embed.addFields({ name: 'Required Parameters', value: parameters, inline: false })
     }
-    
+
     if (optionalParameters) {
       embed.addFields({ name: 'Optional Parameters', value: optionalParameters, inline: false })
     }
-    
+
     await interaction.reply({ embeds: [embed] })
-    
+
   } catch (error) {
     console.error('Error creating endpoint:', error)
     await interaction.reply({ 
@@ -1523,13 +1523,13 @@ async function handleAddEndpoint(interaction) {
 async function handleDeleteEndpoint(interaction) {
   const name = interaction.options.getString('name')
   const category = interaction.options.getString('category')
-  
+
   try {
     const apiFolder = path.join(__dirname, 'api')
     const categoryFolder = path.join(apiFolder, category)
     const fileName = `${name}.js`
     const filePath = path.join(categoryFolder, fileName)
-    
+
     if (!fs.existsSync(filePath)) {
       await interaction.reply({ 
         content: `❌ Endpoint **${name}** not found in category **${category}**!`, 
@@ -1537,11 +1537,11 @@ async function handleDeleteEndpoint(interaction) {
       })
       return
     }
-    
+
     fs.unlinkSync(filePath)
-    
+
     await removeEndpointFromSettings(name, category)
-    
+
     const embed = new EmbedBuilder()
       .setTitle('🗑️ Endpoint Deleted')
       .setColor(0xff0000)
@@ -1552,9 +1552,9 @@ async function handleDeleteEndpoint(interaction) {
         { name: 'File', value: `src/api/${category}/${fileName}`, inline: false }
       )
       .setTimestamp()
-    
+
     await interaction.reply({ embeds: [embed] })
-    
+
   } catch (error) {
     console.error('Error deleting endpoint:', error)
     await interaction.reply({ 
@@ -1568,16 +1568,16 @@ async function handleListEndpoints(interaction) {
   try {
     const apiFolder = path.join(__dirname, 'api')
     const endpoints = []
-    
+
     if (fs.existsSync(apiFolder)) {
       const categories = fs.readdirSync(apiFolder)
-      
+
       for (const category of categories) {
         const categoryPath = path.join(apiFolder, category)
         if (fs.statSync(categoryPath).isDirectory()) {
           const files = fs.readdirSync(categoryPath)
           const jsFiles = files.filter(file => file.endsWith('.js'))
-          
+
           for (const file of jsFiles) {
             const endpointName = path.basename(file, '.js')
             endpoints.push({
@@ -1590,7 +1590,7 @@ async function handleListEndpoints(interaction) {
         }
       }
     }
-    
+
     if (endpoints.length === 0) {
       await interaction.reply({ 
         content: '❌ No endpoints found!', 
@@ -1598,13 +1598,13 @@ async function handleListEndpoints(interaction) {
       })
       return
     }
-    
+
     const embed = new EmbedBuilder()
       .setTitle('🚀 Available API Endpoints')
       .setColor(0x0099ff)
       .setDescription(`Found **${endpoints.length}** endpoint(s)`)
       .setTimestamp()
-    
+
     const groupedEndpoints = {}
     endpoints.forEach(endpoint => {
       if (!groupedEndpoints[endpoint.category]) {
@@ -1612,7 +1612,7 @@ async function handleListEndpoints(interaction) {
       }
       groupedEndpoints[endpoint.category].push(endpoint)
     })
-    
+
     Object.entries(groupedEndpoints).forEach(([category, categoryEndpoints]) => {
       const categoryEmoji = {
         'ai': '🤖',
@@ -1624,20 +1624,20 @@ async function handleListEndpoints(interaction) {
         'news': '📰',
         'custom': '⚙️'
       }[category] || '📁'
-      
+
       const endpointList = categoryEndpoints.map(ep => 
         `• **${ep.name}** - \`${ep.path}\``
       ).join('\n')
-      
+
       embed.addFields({
         name: `${categoryEmoji} ${category.charAt(0).toUpperCase() + category.slice(1)} (${categoryEndpoints.length})`,
         value: endpointList,
         inline: false
       })
     })
-    
+
     await interaction.reply({ embeds: [embed] })
-    
+
   } catch (error) {
     console.error('Error listing endpoints:', error)
     await interaction.reply({ 
@@ -1651,16 +1651,16 @@ async function handleScanEndpoints(interaction) {
   try {
     const apiFolder = path.join(__dirname, 'api')
     const scanResults = []
-    
+
     if (fs.existsSync(apiFolder)) {
       const categories = fs.readdirSync(apiFolder)
-      
+
       for (const category of categories) {
         const categoryPath = path.join(apiFolder, category)
         if (fs.statSync(categoryPath).isDirectory()) {
           const files = fs.readdirSync(categoryPath)
           const jsFiles = files.filter(file => file.endsWith('.js'))
-          
+
           scanResults.push({
             category: category,
             count: jsFiles.length,
@@ -1669,13 +1669,13 @@ async function handleScanEndpoints(interaction) {
         }
       }
     }
-    
+
     const embed = new EmbedBuilder()
       .setTitle('🔍 API Structure Scan')
       .setColor(0x0099ff)
       .setDescription('Detected API folder structure:')
       .setTimestamp()
-    
+
     if (scanResults.length === 0) {
       embed.setDescription('No API categories found!')
     } else {
@@ -1690,11 +1690,11 @@ async function handleScanEndpoints(interaction) {
           'news': '📰',
           'custom': '⚙️'
         }[result.category] || '📁'
-        
+
         const fileList = result.files.length > 0 
           ? result.files.map(f => `\`${f}\``).join(', ')
           : 'No files'
-        
+
         embed.addFields({
           name: `${categoryEmoji} ${result.category.charAt(0).toUpperCase() + result.category.slice(1)} (${result.count} files)`,
           value: fileList,
@@ -1702,9 +1702,9 @@ async function handleScanEndpoints(interaction) {
         })
       })
     }
-    
+
     await interaction.reply({ embeds: [embed] })
-    
+
   } catch (error) {
     console.error('Error scanning endpoints:', error)
     await interaction.reply({ 
@@ -1718,7 +1718,7 @@ async function updateSettingsWithEndpoint(name, filename, category, method, desc
   try {
     const settingsPath = path.join(__dirname, 'settings.json')
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
-    
+
     const categoryDisplayNames = {
       'ai': 'Artificial Intelligence',
       'maker': 'Image Makers',
@@ -1729,9 +1729,9 @@ async function updateSettingsWithEndpoint(name, filename, category, method, desc
       'news': 'News',
       'custom': 'Custom'
     }
-    
+
     const categoryDisplayName = categoryDisplayNames[category] || category.charAt(0).toUpperCase() + category.slice(1)
-    
+
     const paramObj = {}
     if (parameters) {
       const paramList = parameters.split(',').map(p => p.trim())
@@ -1739,19 +1739,19 @@ async function updateSettingsWithEndpoint(name, filename, category, method, desc
         paramObj[param] = `Required: Description for ${param} parameter`
       })
     }
-    
+
     if (optionalParameters) {
       const optionalParamList = optionalParameters.split(',').map(p => p.trim())
       optionalParamList.forEach(param => {
         paramObj[param] = `Optional: Description for ${param} parameter`
       })
     }
-    
+
     const allParams = []
     if (parameters) allParams.push(...parameters.split(',').map(p => p.trim() + '='))
     if (optionalParameters) allParams.push(...optionalParameters.split(',').map(p => p.trim() + '='))
     const endpointPath = `/${category}/${filename}${allParams.length > 0 ? '?' + allParams.join('&') : ''}`
-    
+
     let categoryIndex = settings.categories.findIndex(cat => cat.name === categoryDisplayName)
     if (categoryIndex === -1) {
       settings.categories.push({
@@ -1760,7 +1760,7 @@ async function updateSettingsWithEndpoint(name, filename, category, method, desc
       })
       categoryIndex = settings.categories.length - 1
     }
-    
+
     settings.categories[categoryIndex].items.push({
       name: name,
       desc: description,
@@ -1768,9 +1768,9 @@ async function updateSettingsWithEndpoint(name, filename, category, method, desc
       status: "ready",
       params: paramObj
     })
-    
+
     fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2))
-    
+
   } catch (error) {
     console.error('Error updating settings.json:', error)
     throw error
@@ -1781,7 +1781,7 @@ async function removeEndpointFromSettings(filename, category) {
   try {
     const settingsPath = path.join(__dirname, 'settings.json')
     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
-    
+
     const categoryDisplayNames = {
       'ai': 'Artificial Intelligence',
       'maker': 'Image Makers',
@@ -1792,9 +1792,9 @@ async function removeEndpointFromSettings(filename, category) {
       'news': 'News',
       'custom': 'Custom'
     }
-    
+
     const categoryDisplayName = categoryDisplayNames[category] || category.charAt(0).toUpperCase() + category.slice(1)
-    
+
     const categoryIndex = settings.categories.findIndex(cat => cat.name === categoryDisplayName)
     if (categoryIndex !== -1) {
       const itemIndex = settings.categories[categoryIndex].items.findIndex(item => 
@@ -1802,15 +1802,15 @@ async function removeEndpointFromSettings(filename, category) {
       )
       if (itemIndex !== -1) {
         settings.categories[categoryIndex].items.splice(itemIndex, 1)
-        
+
         if (settings.categories[categoryIndex].items.length === 0) {
           settings.categories.splice(categoryIndex, 1)
         }
       }
     }
-    
+
     fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2))
-    
+
   } catch (error) {
     console.error('Error removing endpoint from settings.json:', error)
     throw error
@@ -1821,7 +1821,7 @@ function generateEndpointTemplate(name, category, method, description, parameter
   const paramList = parameters ? parameters.split(',').map(p => p.trim()) : []
   const optionalParamList = optionalParameters ? optionalParameters.split(',').map(p => p.trim()) : []
   const allParamList = [...paramList, ...optionalParamList]
-  
+
   const paramValidation = paramList.map(param => 
     `      if (!${param}) {
       return res.status(400).json({ 
@@ -1830,7 +1830,7 @@ function generateEndpointTemplate(name, category, method, description, parameter
       })
     }`
   ).join('\n')
-  
+
   const paramUsage = allParamList.map(param => 
     `      const ${param} = req.${method === 'GET' ? 'query' : 'body'}.${param}`
   ).join('\n')
@@ -2059,10 +2059,10 @@ function generateEndpointTemplate(name, category, method, description, parameter
       'retry_max_elapsed_detoxify': '300000',
       'retry_max_elapsed_detox': '300000'
     }
-    
+
     return examples[param.toLowerCase()] || `example_${param}`
   })
-  
+
   return `import axios from "axios"
 import { createApiKeyMiddleware } from "../../middleware/apikey.js"
 
