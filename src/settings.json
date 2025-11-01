@@ -1,5 +1,5 @@
 {
-  "name": "Nagato Api'S",
+  "name": "Nagatol Api'S",
   "version": "v7.1.0",
   "description": "Simple and easy to use API documentation.",
   "maintenance": {
@@ -79,6 +79,65 @@
           }
         }
       ]
+    },
+    {
+      "name": "Download",
+      "items": [
+        {
+          "name": "YouTube MP3",
+          "desc": "Download audio in MP3 format from YouTube",
+          "path": "/download/ytmp3?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube video URL"
+          }
+        },
+        {
+          "name": "YouTube MP4",
+          "desc": "Download video in MP4 format from YouTube",
+          "path": "/download/ytmp4?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube video URL"
+          }
+        },
+        {
+          "name": "Facebook Downloader",
+          "desc": "Download videos or reels from Facebook",
+          "path": "/download/facebook?url=",
+          "status": "ready",
+          "params": {
+            "url": "Facebook video URL"
+          }
+        },
+        {
+          "name": "Instagram Downloader",
+          "desc": "Download posts, reels, or stories from Instagram",
+          "path": "/download/instagram?url=",
+          "status": "ready",
+          "params": {
+            "url": "Instagram post or reel URL"
+          }
+        },
+        {
+          "name": "TikTok Downloader",
+          "desc": "Download TikTok videos without watermark",
+          "path": "/download/tiktok?url=",
+          "status": "ready",
+          "params": {
+            "url": "TikTok video URL"
+          }
+        },
+        {
+          "name": "Spotify Downloader",
+          "desc": "Download songs or playlists from Spotify",
+          "path": "/download/spotify?url=",
+          "status": "ready",
+          "params": {
+            "url": "Spotify track or playlist URL"
+          }
+        }
+      ]
     }
   ],
   "apiKeys": [
@@ -89,65 +148,6 @@
       "ratelimit": "unlimited",
       "active": true,
       "createdAt": "2025-10-05T04:45:58.171Z"
-    }
-  ]
-},
-{
-  "name": "Download",
-  "items": [
-    {
-      "name": "YouTube MP3",
-      "desc": "Download audio in MP3 format from YouTube",
-      "path": "/download/ytmp3?url=",
-      "status": "ready",
-      "params": {
-        "url": "YouTube video URL"
-      }
-    },
-    {
-      "name": "YouTube MP4",
-      "desc": "Download video in MP4 format from YouTube",
-      "path": "/download/ytmp4?url=",
-      "status": "ready",
-      "params": {
-        "url": "YouTube video URL"
-      }
-    },
-    {
-      "name": "Facebook Downloader",
-      "desc": "Download videos or reels from Facebook",
-      "path": "/download/facebook?url=",
-      "status": "ready",
-      "params": {
-        "url": "Facebook video URL"
-      }
-    },
-    {
-      "name": "Instagram Downloader",
-      "desc": "Download reels, posts, or stories from Instagram",
-      "path": "/download/instagram?url=",
-      "status": "ready",
-      "params": {
-        "url": "Instagram post or reel URL"
-      }
-    },
-    {
-      "name": "TikTok Downloader",
-      "desc": "Download TikTok videos without watermark",
-      "path": "/download/tiktok?url=",
-      "status": "ready",
-      "params": {
-        "url": "TikTok video URL"
-      }
-    },
-    {
-      "name": "Spotify Downloader",
-      "desc": "Download songs or playlists from Spotify",
-      "path": "/download/spotify?url=",
-      "status": "ready",
-      "params": {
-        "url": "Spotify track or playlist URL"
-      }
     }
   ]
 }
