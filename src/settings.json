@@ -97,56 +97,56 @@
   "items": [
     {
       "name": "YouTube MP3",
-      "desc": "Descarga audio en formato MP3 desde YouTube",
+      "desc": "Download audio in MP3 format from YouTube",
       "path": "/download/ytmp3?url=",
       "status": "ready",
       "params": {
-        "url": "URL del video de YouTube"
+        "url": "YouTube video URL"
       }
     },
     {
       "name": "YouTube MP4",
-      "desc": "Descarga video en formato MP4 desde YouTube",
+      "desc": "Download video in MP4 format from YouTube",
       "path": "/download/ytmp4?url=",
       "status": "ready",
       "params": {
-        "url": "URL del video de YouTube"
+        "url": "YouTube video URL"
       }
     },
     {
       "name": "Facebook Downloader",
-      "desc": "Descarga videos o reels desde Facebook",
+      "desc": "Download videos or reels from Facebook",
       "path": "/download/facebook?url=",
       "status": "ready",
       "params": {
-        "url": "URL del video de Facebook"
+        "url": "Facebook video URL"
       }
     },
     {
       "name": "Instagram Downloader",
-      "desc": "Descarga reels, publicaciones o stories desde Instagram",
+      "desc": "Download reels, posts, or stories from Instagram",
       "path": "/download/instagram?url=",
       "status": "ready",
       "params": {
-        "url": "URL del post o reel de Instagram"
+        "url": "Instagram post or reel URL"
       }
     },
     {
       "name": "TikTok Downloader",
-      "desc": "Descarga videos de TikTok sin marca de agua",
+      "desc": "Download TikTok videos without watermark",
       "path": "/download/tiktok?url=",
       "status": "ready",
       "params": {
-        "url": "URL del video de TikTok"
+        "url": "TikTok video URL"
       }
     },
     {
       "name": "Spotify Downloader",
-      "desc": "Descarga canciones o playlists desde Spotify",
+      "desc": "Download songs or playlists from Spotify",
       "path": "/download/spotify?url=",
       "status": "ready",
       "params": {
-        "url": "URL del track o playlist de Spotify"
+        "url": "Spotify track or playlist URL"
       }
     }
   ]
