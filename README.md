@@ -30,10 +30,8 @@
 - Node.js >= 20.0.0
 - npm or yarn package manager
 
-### Node.js Installation (Ubuntu/Debian VPS)
-
-If you're running this on a VPS with Ubuntu/Debian, we recommend using NVM (Node Version Manager) for easy Node.js management:
-
+### Instalación de Node.js (VPS Ubuntu/Debian) Si está ejecutando esto en un VPS con Ubuntu/Debian, le recomendamos usar NVM (Node Version Manager) para una gestión sencilla de Node.js:
+ 
 #### Install NVM
 
 ```bash
