@@ -413,7 +413,7 @@ client.once('ready', async () => {
     if (!customActivity) {
       const activities = [
         { name: `${statsData.totalRequests} API requests`, type: 3 },
-        { name: 'with NagatoByte APIs', type: 0 },
+        { name: 'with ShadowByte APIs', type: 0 },
         { name: 'the server status', type: 3 },
         { name: 'API documentation', type: 3 },
         { name: `${client.guilds.cache.size} servers`, type: 3 },
@@ -1085,9 +1085,9 @@ async function handleAutoRoleList(interaction) {
 
 async function handleHelp(interaction) {
   const embed = new EmbedBuilder()
-    .setTitle('🤖 NagatoByte API Bot Commands')
+    .setTitle('🤖 ShadowByte API Bot Commands')
     .setColor(0x0099ff)
-    .setDescription('Here are all available commands for the NagatoByte API bot:')
+    .setDescription('Here are all available commands for the ShadowByte API bot:')
     .addFields(
       { name: '📊 `/stats`', value: 'View enhanced API statistics with top requests and system info', inline: false },
       { name: '🎮 `/activity`', value: 'Manage bot activity status (custom/auto)', inline: false },
@@ -1104,7 +1104,7 @@ async function handleHelp(interaction) {
       { name: '🎭 Auto-Roles', value: '• Automatic role assignment\n• Configurable delays\n• Multiple roles support', inline: false }
     )
     .setTimestamp()
-    .setFooter({ text: 'NagatoByte API Bot • Enhanced with auto-moderation and auto-roles' })
+    .setFooter({ text: 'ShadowByte API Bot • Enhanced with auto-moderation and auto-roles' })
 
   await interaction.reply({ embeds: [embed] })
 }
