@@ -12,7 +12,7 @@
   [![Discord](https://img.shields.io/badge/discord-bot%20ready-7289da.svg)](https://discord.com/developers/applications)
 </div>
 
-## Table of Contents
+## Tabla de contenido 
 
 - [Installation](#installation)
 - [Quick Start](#quick-start)
