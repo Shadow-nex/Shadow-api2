@@ -43,15 +43,6 @@
           "params": {
             "text": "Text message for the AI to respond to"
           }
-        },
-        {
-          "name": "chatgpt",
-          "desc": "Friendly conversational AI powered by Simsimi for chat responses",
-          "path": "/ai/chatgpt?text=",
-          "status": "online",
-          "params": {
-            "text": "Text message for the AI to respond to"
-          }
         }
       ]
     },
@@ -112,6 +103,17 @@
             "url": "YouTube video URL"
           }
         },
+        
+        {
+          "name": "YouTube MP3 V2",
+          "desc": "Download audio in MP3 V2 format from YouTube",
+          "path": "/download/ytmp3V2?url=",
+          "status": "ready",
+          "params": {
+            "url": "YouTube video URL"
+          }
+        },
+        
         {
           "name": "Facebook Downloader",
           "desc": "Download videos or reels from Facebook",
