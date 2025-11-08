@@ -43,17 +43,15 @@
           "params": {
             "text": "Text message for the AI to respond to"
           }
-        }
-      ]
-    },
-    {
-      "name": "Random Images",
-      "items": [
+        },
         {
-          "name": "Blue Archive",
-          "desc": "Get random high-quality Blue Archive character images",
-          "path": "/random/ba",
-          "status": "ready"
+          "name": "Simsimi",
+          "desc": "Friendly conversational AI powered by Simsimi for chat responses",
+          "path": "/ai/simsimi?text=",
+          "status": "online",
+          "params": {
+            "text": "Text message for the AI to respond to"
+          }
         }
       ]
     },
