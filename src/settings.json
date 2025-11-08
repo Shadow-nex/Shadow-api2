@@ -46,7 +46,7 @@
         }
       ]
     },
-    
+
     {
       "name": "Random nsfw",
       "items": [
@@ -58,14 +58,14 @@
         }
       ]
     },
-    
+
     {
       "name": "Image Makers",
       "items": [
         {
           "name": "BRAT Generator",
           "desc": "Generate BRAT-style text images with customizable colors and backgrounds",
-          "path": "/maker/brat?text=Hello World",
+          "path": "/maker/brat?text=",
           "status": "ready",
           "params": {
             "text": "Text to be inserted into the BRAT image (required)"
@@ -73,8 +73,8 @@
         },
         {
           "name": "BRAT Video Generator",
-          "desc": "Generate animated BRAT-style text videos with customizable colors and backgrounds",
-          "path": "/maker/bratvid?text=Hello World",
+          "desc": "Generate animated BRAT-style text videos",
+          "path": "/maker/bratvid?text=",
           "status": "ready",
           "params": {
             "text": "Text to be inserted into the BRAT video (required)"
@@ -82,6 +82,22 @@
         }
       ]
     },
+
+    {
+      "name": "Search",
+      "items": [
+        {
+          "name": "Spotify Search",
+          "desc": "Search songs, artists or albums from Spotify",
+          "path": "/search/spotify?query=",
+          "status": "ready",
+          "params": {
+            "query": "Search text query"
+          }
+        }
+      ]
+    },
+
     {
       "name": "Download",
       "items": [
@@ -90,72 +106,56 @@
           "desc": "Download audio in MP3 format from YouTube",
           "path": "/download/ytmp3?url=",
           "status": "ready",
-          "params": {
-            "url": "YouTube video URL"
-          }
+          "params": { "url": "YouTube video URL" }
         },
         {
           "name": "YouTube MP4",
           "desc": "Download video in MP4 format from YouTube",
           "path": "/download/ytmp4?url=",
           "status": "ready",
-          "params": {
-            "url": "YouTube video URL"
-          }
-        }, 
+          "params": { "url": "YouTube video URL" }
+        },
         {
           "name": "YouTube MP3 V2",
-          "desc": "Download audio in MP3 V2 format from YouTube",
+          "desc": "Download audio in MP3 V2 format",
           "path": "/download/ytmp3V2?url=",
           "status": "ready",
-          "params": {
-            "url": "YouTube video URL"
-          }
+          "params": { "url": "YouTube video URL" }
         },
         {
           "name": "YouTube MP4 V2",
-          "desc": "Download video in MP4 V2 format from YouTube",
+          "desc": "Download video in MP4 V2 format",
           "path": "/download/ytmp4V2?url=",
           "status": "ready",
-          "params": {
-            "url": "YouTube video URL"
-          }
-        }, 
+          "params": { "url": "YouTube video URL" }
+        },
         {
           "name": "Facebook Downloader",
           "desc": "Download videos or reels from Facebook",
           "path": "/download/facebook?url=",
           "status": "ready",
-          "params": {
-            "url": "Facebook video URL"
-          }
+          "params": { "url": "Facebook video URL" }
         },
         {
           "name": "Instagram Downloader",
           "desc": "Download posts, reels, or stories from Instagram",
           "path": "/download/instagram?url=",
           "status": "ready",
-          "params": {
-            "url": "Instagram post or reel URL"
-          }
+          "params": { "url": "Instagram post or reel URL" }
         },
         {
           "name": "TikTok Downloader",
           "desc": "Download TikTok videos without watermark",
           "path": "/download/tiktok?url=",
           "status": "ready",
-          "params": {
-            "url": "TikTok video URL"
-          }
+          "params": { "url": "TikTok video URL" }
         },
         {
           "name": "Spotify Downloader",
           "desc": "Download songs or playlists from Spotify",
           "path": "/download/spotify?url=",
           "status": "ready",
-          "params": {
-            "url": "Spotify track or playlist URL"
-          }
+          "params": { "url": "Spotify track or playlist URL" }
         }
       ]
     }
