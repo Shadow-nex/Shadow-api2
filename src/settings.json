@@ -62,9 +62,9 @@
       "name": "Random nsfw",
       "items": [
         {
-          "name": "N S F W",
+          "name": "NSFW",
           "desc": "Get random high-quality Blue Archive character images",
-          "path": "/nsfw/nsfw",
+          "path": "/nsfw/nsfw1",
           "status": "ready"
         }
       ]
