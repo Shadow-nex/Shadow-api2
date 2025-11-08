@@ -97,9 +97,9 @@
       "name": "Download",
       "items": [
         {
-          "name": "YouTube MP3 V2",
+          "name": "YouTube MP3",
           "desc": "Download audio in MP3 format from YouTube",
-          "path": "/download/ytmp3V2?url=",
+          "path": "/download/youtube?url=",
           "status": "ready",
           "params": {
             "url": "YouTube video URL"

@@ -49,7 +49,7 @@ export default (app) => {
     }
   }
 
-  app.get("/download/ytmp3", createApiKeyMiddleware(), async (req, res) => {
+  app.get("/download/youtube", createApiKeyMiddleware(), async (req, res) => {
     try {
       const { url } = req.query
 
