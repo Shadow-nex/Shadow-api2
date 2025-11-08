@@ -49,7 +49,7 @@ export default (app) => {
     }
   }
 
-  app.get("/download/youtube", createApiKeyMiddleware(), async (req, res) => {
+  app.get("/download/ytmp3", createApiKeyMiddleware(), async (req, res) => {
     try {
       const { url } = req.query
 
@@ -87,7 +87,7 @@ export default (app) => {
     }
   })
 
-  app.post("/download/youtube", createApiKeyMiddleware(), async (req, res) => {
+  app.post("/download/ytmp4", createApiKeyMiddleware(), async (req, res) => {
     try {
       const { url } = req.body
 
