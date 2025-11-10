@@ -6,15 +6,12 @@ const router = express.Router();
 let spotifyToken = null;
 let tokenExpiration = 0;
 
-// 🔥 Tus credenciales directas (solo para pruebas)
-const CLIENT_ID = "922f59f234b24a3a813eadf416e90632"; // 👉 reemplázalo
-const CLIENT_SECRET = "61b939433b044511b344171312118213"; // 👉 reemplázalo
+const CLIENT_ID = "922f59f234b24a3a813eadf416e90632";
+const CLIENT_SECRET = "61b939433b044511b344171312118213";
 
-// 🔥 Función para obtener o reutilizar el token de Spotify
 async function getSpotifyToken() {
   const now = Date.now();
 
-  // Si el token aún es válido, lo reutilizamos
   if (spotifyToken && now < tokenExpiration) return spotifyToken;
 
   const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -33,13 +30,11 @@ async function getSpotifyToken() {
     throw new Error(data.error_description || "Error al obtener token");
   }
 
-  // Guardamos token y expiración (1h)
   spotifyToken = data.access_token;
-  tokenExpiration = now + data.expires_in * 1000 - 60 * 1000; // resta 1 min
+  tokenExpiration = now + data.expires_in * 1000 - 60 * 1000;
   return spotifyToken;
 }
 
-// 🎧 Endpoint principal
 router.get("/search/spotify", async (req, res) => {
   const { q, limit } = req.query;
   if (!q) return res.status(400).json({ error: "Falta el parámetro 'q' (búsqueda)" });
