@@ -144,7 +144,7 @@
           "desc": "Download play",
           "path": "/download/ytplay?url=",
           "status": "ready",
-          "params": { "url": "YouTube video URL" "format": "mp3 | mp4 (default: mp3)", "quality": "128–320 para audio | 360–1080 para video" }
+          "params": { "url": "YouTube video URL", "format": "mp3 | mp4 (default: mp3)", "quality": "128–320 para audio | 360–1080 para video" }
         },
         {
           "name": "Facebook Downloader",
