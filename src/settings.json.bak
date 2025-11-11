@@ -140,16 +140,16 @@
           "params": { "url": "YouTube video URL" }
         },
         {
-           "name": "YouTube Play",
-           "desc": "Descarga audio MP3 o video MP4 desde YouTube.",
-           "path": "/download/ytplay?url=",
-           "status": "ready",
-           "method": "GET",
-            "params": {
-              "url": "URL del video de YouTube (obligatorio)",
-              "format": "mp3 o mp4 (opcional, default: mp3)",
-               "quality": "calidad (ej: 128, 320, 480, 720, 1080...) (opcional)"
-            },
+          "name": "🎧 YouTube Play (Audio / Video)",
+          "desc": "Descarga música MP3 o video MP4 desde YouTube con calidad seleccionable.",
+          "path": "/download/ytplay",
+          "status": "ready",
+          "method": "GET",
+          "params": {
+            "url": "URL del video de YouTube (requerido)",
+            "format": "mp3 | mp4 (default: mp3)",
+            "quality": "128–320 para audio | 360–1080 para video"
+          }
         },
         {
           "name": "Facebook Downloader",
