@@ -92,32 +92,6 @@
         }
       ]
     },
-/*
-    {
-      "name": "Search",
-      "items": [
-        {
-          "name": "Spotify Search",
-          "desc": "Search songs, artists or albums from Spotify",
-          "path": "/search/spotify?query=",
-          "status": "ready",
-          "params": {
-            "query": "Search text query"
-          }
-        },
-        {
-          "name": "YouTube",
-          "desc": "Video search",
-          "path": "/search/youtube?query=",
-          "status": "ready",
-          "params": {
-            "q": "Search query"
-          }
-        }
-      ]
-    },
-*/
- 
     {
       "name": "Download",
       "items": [
