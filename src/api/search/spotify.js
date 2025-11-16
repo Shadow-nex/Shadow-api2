@@ -1,90 +1,75 @@
-import express from "express";
-import fetch from "node-fetch";
+const axios = require("axios");
 
-const router = express.Router();
+const client_id = "3ac7d9b75ec644cb9ae627ee5db358e6";
+const client_secret = "462c7edd060548f3b181dbf8d8c673dc";
 
-let spotifyToken = null;
-let tokenExpiration = 0;
-
-const CLIENT_ID = "922f59f234b24a3a813eadf416e90632";
-const CLIENT_SECRET = "61b939433b044511b344171312118213";
+let access_token = "";
+let token_expiry = 0;
 
 async function getSpotifyToken() {
-  const now = Date.now();
-
-  if (spotifyToken && now < tokenExpiration) return spotifyToken;
-
-  const response = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      Authorization:
-        "Basic " + Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64"),
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: "grant_type=client_credentials",
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    console.error("Error token Spotify:", data);
-    throw new Error(data.error_description || "Error al obtener token");
+  if (access_token && Date.now() < token_expiry) {
+    return access_token;
   }
 
-  spotifyToken = data.access_token;
-  tokenExpiration = now + data.expires_in * 1000 - 60 * 1000;
-  return spotifyToken;
+  const basic = Buffer.from(`${client_id}:${client_secret}`).toString("base64");
+  const res = await axios.post(
+    "https://accounts.spotify.com/api/token",
+    "grant_type=client_credentials",
+    {
+      headers: {
+        Authorization: `Basic ${basic}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+
+  access_token = res.data.access_token;
+  token_expiry = Date.now() + res.data.expires_in * 1000;
+  return access_token;
 }
 
-router.get("/search/spotify", async (req, res) => {
-  const { q, limit } = req.query;
-  if (!q) return res.status(400).json({ error: "Falta el parámetro 'q' (búsqueda)" });
-
-  const maxResults = limit ? parseInt(limit) : 15;
-
-  try {
-    const token = await getSpotifyToken();
-
-    const searchUrl = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
-      q
-    )}&type=track&limit=${maxResults}`;
-
-    const response = await fetch(searchUrl, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("Error Spotify API:", errText);
-      return res.status(response.status).json({ error: errText });
+module.exports = function (app) {
+  app.get("/search/spotify", async (req, res) => {
+    const { query } = req.query;
+    if (!query) {
+      return res.status(400).json({
+        status: false,
+        message: "Parameter 'query' wajib diisi."
+      });
     }
 
-    const data = await response.json();
+    try {
+      const token = await getSpotifyToken();
 
-    const tracks = data.tracks.items.map((track) => ({
-      id: track.id,
-      title: track.name,
-      artists: track.artists.map((a) => a.name).join(", "),
-      album: track.album.name,
-      album_release_date: track.album.release_date,
-      duration_min: (track.duration_ms / 60000).toFixed(2),
-      explicit: track.explicit,
-      popularity: track.popularity,
-      preview_url: track.preview_url,
-      external_url: track.external_urls.spotify,
-      cover: track.album.images?.[0]?.url,
-    }));
+      const searchRes = await axios.get(
+        `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=10`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    res.json({
-      status: true,
-      creator: "Shadow.xyz",
-      query: q,
-      total_results: tracks.length,
-      results: tracks,
-    });
-  } catch (err) {
-    console.error("❌ Error:", err.message);
-    res.status(500).json({ error: "Error interno del servidor" });
-  }
-});
+      const tracks = searchRes.data.tracks.items.map(item => ({
+        title: item.name,
+        artist: item.artists.map(a => a.name).join(", "),
+        link: item.external_urls.spotify,
+        image: item.album.images?.[0]?.url,
+        duration_ms: item.duration_ms,
+        popularity: item.popularity
+      }));
 
-export default router;
+      res.json({
+        status: true,
+        creator: "FlowFalcon",
+        result: tracks
+      });
+    } catch (e) {
+      res.status(500).json({
+        status: false,
+        message: "Gagal mengambil data dari Spotify.",
+        error: e.response?.data || e.message
+      });
+    }
+  });
+};
