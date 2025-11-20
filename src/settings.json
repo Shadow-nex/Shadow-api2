@@ -152,6 +152,13 @@
           "params": { "url": "TikTok video URL" }
         },
         {
+          "name": "TikTok 2 Downloader",
+          "desc": "Download TikTok videos without watermark",
+          "path": "/download/tiktok2?url=",
+          "status": "ready",
+          "params": { "url": "TikTok video URL" }
+        },
+        {
           "name": "Spotify Downloader",
           "desc": "Download songs or playlists from Spotify",
           "path": "/download/spotify?url=",
